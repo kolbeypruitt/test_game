@@ -27,13 +27,22 @@ var mainState = {
         game.load.spritesheet('player_right', 'assets/marvin/walk_right.png', 64, 60, 8);
         game.load.image('bullet', 'assets/bullet.png');
         game.load.image('enemy', 'assets/pikachu.png');
+        game.load.image('grass', 'assets/grass.jpg');
     },
 
     create: function () {
-        starfield = game.add.tileSprite(0,0,800,600,'starfield');
-        backgroundV = 1;
+     
+        //  Resize our game world to be a 2000 x 2000 square
+        game.world.setBounds(-1000, -1000, 2000, 2000);
+        game.stage.disableVisibilityChange = true;
 
-        player = game.add.sprite(game.world.centerX, game.world.centerY + 200, 'player_down');
+        //  Our tiled scrolling background
+        land = game.add.tileSprite(0, 0, 800, 600, 'grass');
+        land.fixedToCamera = true;
+
+
+
+        player = game.add.sprite(0, 200, 'player_down');
 
         player.animations.add('run');
 
@@ -59,8 +68,14 @@ var mainState = {
         createEnemies();
 
         scoreText = game.add.text(10,550,'Score:',{font: '32px Arial',fill: '#fff'});
+        scoreText.fixedToCamera = true;
         winText = game.add.text(game.world.centerX,game.world.centerY,'You Win!',{font: '32px Arial',fill: '#fff'});
         winText.visible = false;
+
+
+        game.camera.follow(player);
+        game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
+        game.camera.focusOnXY(0, 0);
     },
 
     update: function () {
@@ -70,35 +85,30 @@ var mainState = {
 
         player.body.velocity.x = 0;
         player.body.velocity.y = 0;
-        // player.animations.stop();
+        player.animations.stop();
 
-        starfield.tilePosition.y += backgroundV;
 
         if(cursors.left.isDown) {
             player.body.velocity.x = -200;
-            player.loadTexture('player_left', 1, true);
+            player.loadTexture('player_left');
             player.animations.play('run', 7, false, false);
         }
 
         if(cursors.right.isDown) {
             player.body.velocity.x = 200;
-            player.loadTexture('player_right', 0);
-            player.animations.play('run', 7, false, false);
+            player.loadTexture('player_right');
 
         }
 
         if(cursors.up.isDown) {
             player.body.velocity.y = -200;
-            player.loadTexture('player_up', 0);
-            player.animations.play('run', 7, false, false);
+            player.loadTexture('player_up');
         }
 
         if(cursors.down.isDown) {
             player.body.velocity.y = 200;
-            player.loadTexture('player_down', 0);
-            player.animations.play('run', 7, false, false);
+            player.loadTexture('player_down');
         }
-
 
         if(fireButton.isDown) {
             fireBullet();
@@ -106,10 +116,14 @@ var mainState = {
 
         scoreText.text = 'Score: ' + score;
 
+
         if(score == 4000) {
             winText.visible = true;
             scoreText.visible = false;
         }
+
+        land.tilePosition.x = -game.camera.x;
+        land.tilePosition.y = -game.camera.y;
     }
 };
 
