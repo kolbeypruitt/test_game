@@ -1,23 +1,45 @@
-
-
-var ready = false;
-var eurecaServer;
-//this function will handle client communication with the server
 var eurecaClientSetup = function() {
   //create an instance of eureca.io client
   var eurecaClient = new Eureca.Client();
   
   eurecaClient.ready(function (proxy) {   
     eurecaServer = proxy;
-    
-    
-    //we temporary put create function here so we make sure to launch the game once the client is ready
+  });
+  
+  
+  //methods defined under "exports" namespace become available in the server side
+  
+  eurecaClient.exports.setId = function(id) 
+  {
+    //create() is moved here to make sure nothing is created before uniq id assignation
+    myId = id;
     create();
+    eurecaServer.handshake();
     ready = true;
-  }); 
+  } 
+  
+  eurecaClient.exports.kill = function(id)
+  { 
+    if (tanksList[id]) {
+      tanksList[id].kill();
+      console.log('killing ', id, tanksList[id]);
+    }
+  } 
+  
+  eurecaClient.exports.spawnEnemy = function(i, x, y)
+  {
+    
+    if (i == myId) return; //this is me
+    
+    console.log('SPAWN');
+    var tnk = new Tank(i, game, tank);
+    tanksList[i] = tnk;
+  }
+  
 }
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload, create: eurecaClientSetup, update: update, render: render });
+
 //
 //
 // everything above this is eureca code
