@@ -1,3 +1,8 @@
+var ready;
+var myId;
+var currentUsers;
+var tank;
+
 var eurecaClientSetup = function() {
   //create an instance of eureca.io client
   var eurecaClient = new Eureca.Client();
@@ -9,8 +14,7 @@ var eurecaClientSetup = function() {
   
   //methods defined under "exports" namespace become available in the server side
   
-  eurecaClient.exports.setId = function(id) 
-  {
+  eurecaClient.exports.setId = function(id) {
     //create() is moved here to make sure nothing is created before uniq id assignation
     myId = id;
     create();
@@ -18,27 +22,26 @@ var eurecaClientSetup = function() {
     ready = true;
   } 
   
-  eurecaClient.exports.kill = function(id)
-  { 
-    if (tanksList[id]) {
-      tanksList[id].kill();
-      console.log('killing ', id, tanksList[id]);
+  eurecaClient.exports.kill = function(id) { 
+    if (currentUsers[id]) {
+      currentUsers[id].kill();
+      console.log('killing ', id, currentUsers[id]);
     }
   } 
   
-  eurecaClient.exports.spawnEnemy = function(i, x, y)
-  {
+  eurecaClient.exports.spawnEnemy = function(i, x, y) {
     
     if (i == myId) return; //this is me
     
     console.log('SPAWN');
-    var tnk = new Tank(i, game, tank);
-    tanksList[i] = tnk;
+    var spawn = new Tank(i, game, tank);
+    currentUsers[i] = spawn;
   }
   
 }
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload, create: eurecaClientSetup, update: update, render: render });
+
 
 //
 //
@@ -47,10 +50,6 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload,
 //
 
 // var game = new Phaser.Game(800,600,Phaser.AUTO,'gameDiv');
-
-var starfield;
-
-var backgroundV;
 
 var player;
 
@@ -65,6 +64,8 @@ var enemies;
 var score = 0;
 var scoreText;
 var winText;
+
+
 
 // var mainState = {
     function preload() {
