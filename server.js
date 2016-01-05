@@ -1,6 +1,6 @@
 var express = require('express')
-var app = express(app)
-var server = require('http').createServer(app);
+  , app = express(app)
+  , server = require('http').createServer(app);
 
 // serve static files from the current directory
 app.use(express.static(__dirname));
@@ -8,10 +8,11 @@ app.use(express.static(__dirname));
 //we'll keep clients data here
 var clients = {};
   
-//get Eureca.Server class
-var Eureca = require('eureca.io')
+//get EurecaServer class
+var Eureca = require('eureca.io');
 
-//create an instance of Eureca
+
+//create an instance of EurecaServer
 var eurecaServer = new Eureca.Server({allow:['setId', 'spawnEnemy', 'kill', 'updateState']});
 
 //attach eureca.io to our http server
