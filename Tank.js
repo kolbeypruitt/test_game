@@ -34,13 +34,9 @@ var Tank = function (index, game, player) {
     this.nextFire = 0;
     this.alive = true;
  
-    this.shadow = game.add.sprite(x, y, 'enemy', 'shadow');
     this.tank = game.add.sprite(x, y, 'walking', 27);
-    // this.turret = game.add.sprite(x, y, 'enemy', 'turret');
- 
-    this.shadow.anchor.set(0.5);
+
     this.tank.anchor.set(0.5);
-    // this.turret.anchor.set(0.3, 0.5);
  
     this.tank.id = index;
     game.physics.enable(this.tank, Phaser.Physics.ARCADE);
@@ -96,14 +92,6 @@ Tank.prototype.update = function() {
         game.physics.arcade.velocityFromRotation(this.tank.rotation, 0, this.tank.body.velocity);
     }    
     
-    
-    
-    this.shadow.x = this.tank.x;
-    this.shadow.y = this.tank.y;
-    this.shadow.rotation = this.tank.rotation;
- 
-    // this.turret.x = this.tank.x;
-    // this.turret.y = this.tank.y;
 };
 
 Tank.prototype.fire = function(target) {
@@ -122,6 +110,4 @@ Tank.prototype.fire = function(target) {
 Tank.prototype.kill = function() {
   this.alive = false;
   this.tank.kill();
-  // this.turret.kill();
-  this.shadow.kill();
 }
