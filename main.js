@@ -20,14 +20,15 @@ var winText;
 
 var mainState = {
     preload: function () {
-        game.load.image('starfield', 'assets/starfield.png');
-        game.load.spritesheet('player_down', 'assets/marvin/walk_down.png', 64, 60, 8);
-        game.load.spritesheet('player_up', 'assets/marvin/walk_up.png', 64, 60, 8);
-        game.load.spritesheet('player_left', 'assets/marvin/walk_left.png', 64, 60, 8);
-        game.load.spritesheet('player_right', 'assets/marvin/walk_right.png', 64, 60, 8);
+        // game.load.spritesheet('player_down', 'assets/marvin/walk_down.png', 64, 60, 8);
+        // game.load.spritesheet('player_up', 'assets/marvin/walk_up.png', 64, 60, 8);
+        // game.load.spritesheet('player_left', 'assets/marvin/walk_left.png', 64, 60, 8);
+        // game.load.spritesheet('player_right', 'assets/marvin/walk_right.png', 64, 60, 8);
+
+        game.load.spritesheet('walking', 'assets/marvin/walking.png', 64, 65, 36);
         game.load.image('bullet', 'assets/bullet.png');
         game.load.image('enemy', 'assets/pikachu.png');
-        game.load.image('grass', 'assets/grass.jpg');
+        game.load.image('grass', 'assets/grass.png');
     },
 
     create: function () {
@@ -37,14 +38,16 @@ var mainState = {
         game.stage.disableVisibilityChange = true;
 
         //  Our tiled scrolling background
-        land = game.add.tileSprite(0, 0, 800, 600, 'grass');
+        land = game.add.tileSprite(0, 0, 1200, 800, 'grass');
         land.fixedToCamera = true;
 
 
+        player = game.add.sprite(0, 0, 'walking');
 
-        player = game.add.sprite(0, 200, 'player_down');
-
-        player.animations.add('run');
+        player.animations.add('walk_left', [0,1,2,3,4,5,6,7,8], 6);
+        player.animations.add('walk_right', [9,10,11,12,13,14,15,16,17], 6);
+        player.animations.add('walk_up', [18,19,20,21,22,23,24,25,26], 6);
+        player.animations.add('walk_down', [27,28,29,30,31,32,33,34,35], 6);
 
         game.physics.enable(player,Phaser.Physics.ARCADE);
 
@@ -85,31 +88,30 @@ var mainState = {
 
         player.body.velocity.x = 0;
         player.body.velocity.y = 0;
-        player.animations.stop();
+        // player.animations.stop();
+
+            if (cursors.left.isDown){
+                player.body.velocity.x = -150;
+                player.animations.play('walk_left', 7, false, false);
+            }
+
+            if(cursors.right.isDown) {
+                player.animations.play('walk_right', 7, false, false);
+                player.body.velocity.x = 150;
+            }
+
+            if(cursors.up.isDown) {
+                player.animations.play('walk_up', 7, false, false);
+                player.body.velocity.y = -150;
+            }
+
+            if(cursors.down.isDown) {
+                player.animations.play('walk_down', 7, false, false);
+                player.body.velocity.y = 150;
+            }
 
 
-        if(cursors.left.isDown) {
-            player.body.velocity.x = -200;
-            player.loadTexture('player_left');
-            player.animations.play('run', 7, false, false);
-        }
-
-        if(cursors.right.isDown) {
-            player.body.velocity.x = 200;
-            player.loadTexture('player_right');
-
-        }
-
-        if(cursors.up.isDown) {
-            player.body.velocity.y = -200;
-            player.loadTexture('player_up');
-        }
-
-        if(cursors.down.isDown) {
-            player.body.velocity.y = 200;
-            player.loadTexture('player_down');
-        }
-
+        player.animations.play('run', 7, false, false);
         if(fireButton.isDown) {
             fireBullet();
         }
