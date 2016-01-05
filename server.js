@@ -19,8 +19,6 @@ var eurecaServer = new Eureca.Server({allow:['setId', 'spawnEnemy', 'kill', 'upd
 eurecaServer.attach(server);
 
 
-
-
 //eureca.io provides events to detect clients connect/disconnect
 
 //detect client connection

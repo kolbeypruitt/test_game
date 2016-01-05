@@ -1,17 +1,14 @@
 var ready;
 var myId;
 var currentUsers;
-var tank;
+var avatar;
 var eurecaServer;
 var myId = 0;
 var land;
 var player;
-var explosions;
 var cursors;
 var ready = false;
 var enemies;
-var bullets;
-var bulletTime = 0;
 var score = 0;
 var scoreText;
 
@@ -46,7 +43,7 @@ var eurecaClientSetup = function() {
     if (i == myId) return; //this is me
 
     // console.log('SPAWN');
-    var spawn = new Tank(i, game, tank);
+    var spawn = new Avatar(i, game, avatar);
     currentUsers[i] = spawn;
   }
 
@@ -54,10 +51,9 @@ var eurecaClientSetup = function() {
     // console.log('updating state', id, state)
     if (currentUsers[id]) {
       currentUsers[id].cursor = state;
-      currentUsers[id].tank.x = state.x;
-      currentUsers[id].tank.y = state.y;
-      currentUsers[id].tank.fire = state.fire;
-      // currentUsers[id].turret.rotation = state.rot;
+      currentUsers[id].avatar.x = state.x;
+      currentUsers[id].avatar.y = state.y;
+      currentUsers[id].avatar.fire = state.fire;
       currentUsers[id].update();
     }
   }
@@ -70,7 +66,7 @@ var eurecaClientSetup = function() {
 //
 //
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', {
+var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'gamediv', {
   preload: preload,
   create: eurecaClientSetup,
   update: update,
@@ -79,7 +75,6 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', {
 
 function preload() {
   game.load.spritesheet('walking', 'assets/marvin/walking.png', 63.5, 65, 36);
-  game.load.image('bullet', 'assets/bullet.png');
   game.load.image('enemy', 'assets/pikachu.png');
   game.load.image('grass', 'assets/grass.png');
   game.load.image('logo', 'assets/game_logo.png');
@@ -93,28 +88,27 @@ function create() {
   game.stage.disableVisibilityChange = true;
 
   //  Our tiled scrolling background
-  land = game.add.tileSprite(0, 0, 800, 600, 'grass');
+  land = game.add.tileSprite(0, 0, 1200, 800, 'grass');
   land.fixedToCamera = true;
 
   currentUsers = {};
 
-  player = new Tank(myId, game, tank);
+  player = new Avatar(myId, game, avatar);
   currentUsers[myId] = player;
-  tank = player.tank;
+  avatar = player.avatar;
   turret = player.turret;
-  tank.x = 0;
-  tank.y = 0;
-  bullets = player.bullets;
+  avatar.x = 0;
+  avatar.y = 0;
   shadow = player.shadow;
 
-  tank.bringToTop();
+  avatar.bringToTop();
 
   logo = game.add.sprite(150, 200, 'logo');
   logo.fixedToCamera = true;
 
   game.input.onDown.add(removeLogo, this);
 
-  game.camera.follow(tank);
+  game.camera.follow(avatar);
   game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
   game.camera.focusOnXY(0, 0);
 
@@ -152,16 +146,11 @@ function update() {
 
   for (var i in currentUsers) {
     if (!currentUsers[i]) continue;
-    var curBullets = currentUsers[i].bullets;
-    var curTank = currentUsers[i].tank;
+    var curAvatar = currentUsers[i].avatar;
     for (var j in currentUsers) {
       if (!currentUsers[j]) continue;
       if (j != i) {
-
-        var targetTank = currentUsers[j].tank;
-
-        game.physics.arcade.overlap(curBullets, targetTank, null, this);
-
+        var targetAvatar = currentUsers[j].avatar;
       }
       if (currentUsers[j].alive) {
         currentUsers[j].update();
