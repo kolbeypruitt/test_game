@@ -55,8 +55,8 @@ eurecaServer.onDisconnect(function (conn) {
 });
 
 
-eurecaServer.exports.handshake = function()
-{
+eurecaServer.exports.handshake = function() {
+  console.log("shaking hands...")
   for (var c in clients)
   {
     var remote = clients[c].remote;
@@ -74,6 +74,7 @@ eurecaServer.exports.handshake = function()
 
 //be exposed to client side
 eurecaServer.exports.handleKeys = function (keys) {
+  console.log("handling keys...", keys)
   var conn = this.connection;
   var updatedClient = clients[conn.id];
   
