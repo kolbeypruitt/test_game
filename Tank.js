@@ -3,6 +3,7 @@ var Tank = function(index, game, player) {
         left: false,
         right: false,
         up: false,
+        down: false,
         fire: false
     };
 
@@ -10,6 +11,7 @@ var Tank = function(index, game, player) {
         left: false,
         right: false,
         up: false,
+        down: false,
         fire: false
     };
 
@@ -19,18 +21,6 @@ var Tank = function(index, game, player) {
     this.game = game;
     this.health = 30;
     this.player = player;
-    this.bullets = game.add.group();
-    this.bullets.enableBody = true;
-    this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(20, 'bullet', 0, false);
-    this.bullets.setAll('anchor.x', 0.5);
-    this.bullets.setAll('anchor.y', 0.5);
-    this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('checkWorldBounds', true);
-
-    this.currentSpeed = 0;
-    this.fireRate = 500;
-    this.nextFire = 0;
     this.alive = true;
 
     this.tank = game.add.sprite(x, y, 'walking', 27);
@@ -48,10 +38,6 @@ var Tank = function(index, game, player) {
     this.tank.body.collideWorldBounds = true;
     this.tank.body.bounce.setTo(0, 0);
 
-    this.tank.angle = 0;
-
-    game.physics.arcade.velocityFromRotation(this.tank.rotation, 0, this.tank.body.velocity);
-
 };
 
 Tank.prototype.update = function() {
@@ -60,8 +46,7 @@ Tank.prototype.update = function() {
         this.cursor.left != this.input.left ||
         this.cursor.right != this.input.right ||
         this.cursor.up != this.input.up ||
-        this.cursor.down != this.input.down ||
-        this.cursor.fire != this.input.fire
+        this.cursor.down != this.input.down
     );
 
 
@@ -72,20 +57,17 @@ Tank.prototype.update = function() {
             // send latest valid state to the server
             this.input.x = this.tank.x;
             this.input.y = this.tank.y;
-            this.input.angle = this.tank.angle;
-
 
             eurecaServer.handleKeys(this.input);
 
         }
     }
 
-
-
     if (this.cursor.left) {
         this.tank.x += -1;
         this.tank.animations.play('walk_left', 8, false, false);
-    } else if (this.cursor.right) {
+    }
+    if (this.cursor.right) {
         this.tank.animations.play('walk_right', 8, false, false);
         this.tank.x += 1;
     }
@@ -100,17 +82,9 @@ Tank.prototype.update = function() {
 
 };
 
-Tank.prototype.fire = function(target) {
-    if (!this.alive) return;
-    if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0) {
-        this.nextFire = this.game.time.now + this.fireRate;
-        var bullet = this.bullets.getFirstDead();
-        // bullet.reset(this.turret.x, this.turret.y);
-
-        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
-    }
-};
-
+Tank.prototype.attack = function () {
+    // body...
+}
 
 Tank.prototype.kill = function() {
     this.alive = false;
