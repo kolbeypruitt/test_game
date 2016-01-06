@@ -30,7 +30,7 @@ var Avatar = function(index, game, player) {
   this.avatar.animations.add('walk_right', [9,10,11,12,13,14,15,16,17], 60, false, true);
   this.avatar.animations.add('walk_up', [18,19,20,21,22,23,24,25,26], 60, false, true);
   this.avatar.animations.add('walk_down', [27,28,29,30,31,32,33,34,35], 60, false, true);
-  this.avatar.animations.add('attack_up', [36,39,42,45,48], 60, false, true);
+  this.avatar.animations.add('attack_up', [36,39,42,45,48,51,36], 60, false, true);
 
   this.avatar.anchor.set(0.5);
 

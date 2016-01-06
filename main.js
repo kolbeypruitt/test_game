@@ -74,7 +74,7 @@ var game = new Phaser.Game(1200, 700, Phaser.AUTO, 'gamediv', {
 });
 
 function preload() {
-  game.load.spritesheet('walking', 'assets/marvin/walking.png', 63.5, 65, 56);
+  game.load.spritesheet('walking', 'assets/marvin/walking.png', 64, 75, 56);
   game.load.image('enemy', 'assets/pikachu.png');
   game.load.image('grass', 'assets/grass.png');
   game.load.image('logo', 'assets/game_logo.png');
