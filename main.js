@@ -1,6 +1,6 @@
 var ready;
 var myId;
-var currentUsers;
+var avatarList;
 var avatar;
 var eurecaServer;
 var myId = 0;
@@ -32,9 +32,9 @@ var eurecaClientSetup = function() {
   }
 
   eurecaClient.exports.kill = function(id) {
-    if (currentUsers[id]) {
-      currentUsers[id].kill();
-      // console.log('killing ', id, currentUsers[id]);
+    if (avatarList[id]) {
+      avatarList[id].kill();
+      // console.log('killing ', id, avatarList[id]);
     }
   }
 
@@ -44,17 +44,17 @@ var eurecaClientSetup = function() {
 
     // console.log('SPAWN');
     var spawn = new Avatar(i, game, avatar);
-    currentUsers[i] = spawn;
+    avatarList[i] = spawn;
   }
 
   eurecaClient.exports.updateState = function(id, state) {
     // console.log('updating state', id, state)
-    if (currentUsers[id]) {
-      currentUsers[id].cursor = state;
-      currentUsers[id].avatar.x = state.x;
-      currentUsers[id].avatar.y = state.y;
-      currentUsers[id].avatar.fire = state.fire;
-      currentUsers[id].update();
+    if (avatarList[id]) {
+      avatarList[id].cursor = state;
+      avatarList[id].avatar.x = state.x;
+      avatarList[id].avatar.y = state.y;
+      avatarList[id].avatar.attack = state.attack;
+      avatarList[id].update();
     }
   }
 
@@ -66,7 +66,7 @@ var eurecaClientSetup = function() {
 //
 //
 
-var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'gamediv', {
+var game = new Phaser.Game(1200, 700, Phaser.AUTO, 'gamediv', {
   preload: preload,
   create: eurecaClientSetup,
   update: update,
@@ -74,7 +74,7 @@ var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'gamediv', {
 });
 
 function preload() {
-  game.load.spritesheet('walking', 'assets/marvin/walking.png', 63.5, 65, 36);
+  game.load.spritesheet('walking', 'assets/marvin/walking.png', 63.5, 65, 56);
   game.load.image('enemy', 'assets/pikachu.png');
   game.load.image('grass', 'assets/grass.png');
   game.load.image('logo', 'assets/game_logo.png');
@@ -88,13 +88,13 @@ function create() {
   game.stage.disableVisibilityChange = true;
 
   //  Our tiled scrolling background
-  land = game.add.tileSprite(0, 0, 1200, 800, 'grass');
+  land = game.add.tileSprite(0, 0, 1200, 700, 'grass');
   land.fixedToCamera = true;
 
-  currentUsers = {};
+  avatarList = {};
 
   player = new Avatar(myId, game, avatar);
-  currentUsers[myId] = player;
+  avatarList[myId] = player;
   avatar = player.avatar;
   turret = player.turret;
   avatar.x = 0;
@@ -137,23 +137,21 @@ function update() {
   player.input.right = cursors.right.isDown;
   player.input.up = cursors.up.isDown;
   player.input.down = cursors.down.isDown;
-  player.input.fire = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).isDown;
-  player.input.tx = game.input.x + game.camera.x;
-  player.input.ty = game.input.y + game.camera.y;
+  player.input.attack = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).isDown;
 
   land.tilePosition.x = -game.camera.x;
   land.tilePosition.y = -game.camera.y;
 
-  for (var i in currentUsers) {
-    if (!currentUsers[i]) continue;
-    var curAvatar = currentUsers[i].avatar;
-    for (var j in currentUsers) {
-      if (!currentUsers[j]) continue;
+  for (var i in avatarList) {
+    if (!avatarList[i]) continue;
+    var curAvatar = avatarList[i].avatar;
+    for (var j in avatarList) {
+      if (!avatarList[j]) continue;
       if (j != i) {
-        var targetAvatar = currentUsers[j].avatar;
+        var targetAvatar = avatarList[j].avatar;
       }
-      if (currentUsers[j].alive) {
-        currentUsers[j].update();
+      if (avatarList[j].alive) {
+        avatarList[j].update();
       }
     }
   }

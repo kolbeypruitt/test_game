@@ -5,7 +5,7 @@ var Avatar = function(index, game, player) {
       right: false,
       up: false,
       down: false,
-      fire: false
+      attack: false
   };
 
   this.input = {
@@ -13,7 +13,7 @@ var Avatar = function(index, game, player) {
       right: false,
       up: false,
       down: false,
-      fire: false
+      attack: false
   };
 
   var x = 0;
@@ -30,6 +30,7 @@ var Avatar = function(index, game, player) {
   this.avatar.animations.add('walk_right', [9,10,11,12,13,14,15,16,17], 60, false, true);
   this.avatar.animations.add('walk_up', [18,19,20,21,22,23,24,25,26], 60, false, true);
   this.avatar.animations.add('walk_down', [27,28,29,30,31,32,33,34,35], 60, false, true);
+  this.avatar.animations.add('attack_up', [36,39,42,45,48], 60, false, true);
 
   this.avatar.anchor.set(0.5);
 
@@ -47,7 +48,8 @@ Avatar.prototype.update = function() {
       this.cursor.left != this.input.left ||
       this.cursor.right != this.input.right ||
       this.cursor.up != this.input.up ||
-      this.cursor.down != this.input.down
+      this.cursor.down != this.input.down ||
+      this.cursor.attack != this.input.attack
   );
 
 
@@ -65,20 +67,24 @@ Avatar.prototype.update = function() {
   }
 
   if (this.cursor.left) {
-      this.avatar.x += -1;
-      this.avatar.animations.play('walk_left', 8, false, false);
+    this.avatar.x += -1;
+    this.avatar.animations.play('walk_left', 8, false, false);
   }
   if (this.cursor.right) {
-      this.avatar.animations.play('walk_right', 8, false, false);
-      this.avatar.x += 1;
+    this.avatar.animations.play('walk_right', 8, false, false);
+    this.avatar.x += 1;
   }
   if (this.cursor.up) {
-      this.avatar.animations.play('walk_up', 8, false, false);
-      this.avatar.y += -1;
+    this.avatar.animations.play('walk_up', 8, false, false);
+    this.avatar.y += -1;
   }
   if (this.cursor.down) {
-      this.avatar.animations.play('walk_down', 8, false, false);
-      this.avatar.y += 1;
+    this.avatar.animations.play('walk_down', 8, false, false);
+    this.avatar.y += 1;
+  }
+  if (this.cursor.attack) {
+    console.log("attack!");
+    this.avatar.animations.play('attack_up', 8, false, false);
   }
 
 };
