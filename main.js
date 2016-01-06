@@ -96,7 +96,6 @@ function create() {
   player = new Avatar(myId, game, avatar);
   avatarList[myId] = player;
   avatar = player.avatar;
-  turret = player.turret;
   avatar.x = 0;
   avatar.y = 0;
   shadow = player.shadow;
