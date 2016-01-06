@@ -66,7 +66,7 @@ var eurecaClientSetup = function() {
 //
 //
 
-var game = new Phaser.Game(1200, 700, Phaser.AUTO, 'gamediv', {
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', {
   preload: preload,
   create: eurecaClientSetup,
   update: update,
@@ -74,10 +74,12 @@ var game = new Phaser.Game(1200, 700, Phaser.AUTO, 'gamediv', {
 });
 
 function preload() {
-  game.load.spritesheet('walking', 'assets/marvin/walking.png', 64, 75, 56);
-  game.load.image('enemy', 'assets/pikachu.png');
-  game.load.image('grass', 'assets/grass.png');
-  game.load.image('logo', 'assets/game_logo.png');
+  game.load.atlasJSONHash('marvin', 'assets/sprites/marvin.png', 'assets/sprites/marvin.json');
+
+
+  // game.load.spritesheet('marvin', 'assets/marvin/walking.png', 64, 75, 56);
+  game.load.image('grass', 'assets/sprites/grass.png');
+  game.load.image('logo', 'assets/sprites/game_logo.png');
 }
 
 
@@ -88,7 +90,7 @@ function create() {
   game.stage.disableVisibilityChange = true;
 
   //  Our tiled scrolling background
-  land = game.add.tileSprite(0, 0, 1200, 700, 'grass');
+  land = game.add.tileSprite(0, 0, 800, 600, 'grass');
   land.fixedToCamera = true;
 
   avatarList = {};
@@ -98,7 +100,7 @@ function create() {
   avatar = player.avatar;
   avatar.x = 0;
   avatar.y = 0;
-  shadow = player.shadow;
+  // shadow = player.shadow;
 
   avatar.bringToTop();
 
@@ -131,6 +133,24 @@ function removeLogo() {
 function update() {
   //do not update if client not ready
   if (!ready) return;
+
+
+  // 
+
+  /* Divide the current tap x coordinate to half the game.width, floor it and there you go */
+  // var RIGHT = 0, LEFT = 1;
+  // game.input.onTap.add(function(e){
+  //   if (Math.floor(e.x/(this.game.width/2)) === LEFT) {
+  //     player.input.right = true;
+  //     player.input.left = false;
+  //   }
+
+  //   if (Math.floor(e.x/(this.game.width/2)) === RIGHT) {
+  //     player.input.left = true;
+  //     player.input.right = false;
+  //   }
+  // }); 
+  // 
 
   player.input.left = cursors.left.isDown;
   player.input.right = cursors.right.isDown;

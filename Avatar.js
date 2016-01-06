@@ -24,13 +24,19 @@ var Avatar = function(index, game, player) {
   this.player = player;
   this.alive = true;
 
-  this.avatar = game.add.sprite(x, y, 'walking', 27);
+  this.avatar = game.add.sprite(x, y, 'marvin');
 
-  this.avatar.animations.add('walk_left', [0,1,2,3,4,5,6,7,8], 60, false, true);
-  this.avatar.animations.add('walk_right', [9,10,11,12,13,14,15,16,17], 60, false, true);
-  this.avatar.animations.add('walk_up', [18,19,20,21,22,23,24,25,26], 60, false, true);
-  this.avatar.animations.add('walk_down', [27,28,29,30,31,32,33,34,35], 60, false, true);
-  this.avatar.animations.add('attack_up', [36,39,42,45,48,51,36], 60, false, true);
+  this.avatar.animations.add('walk_up', [60,61,62,63,64,65,66,67,68], 60, false, true);
+  this.avatar.animations.add('walk_left', [69,70,71,72,73,74,75,76,77], 60, false, true);
+  this.avatar.animations.add('walk_down', [78,79,80,81,82,83,84,85,86], 60, false, true);
+  this.avatar.animations.add('walk_right', [87,88,89,90,91,92,93,94,95], 60, false, true);
+
+  this.avatar.animations.add('attack_up', [178,179,180,181,182,183], 60, false, true);
+  this.avatar.animations.add('attack_left', [184,185,186,187,188,189], 60, false, true);
+  this.avatar.animations.add('attack_down', [190,191,192,193,194,195], 60, false, true);
+  this.avatar.animations.add('attack_right', [196,197,198,199,200,201], 60, false, true);
+
+  this.avatar.animations.add('die', [172,173,174,175,176,177], 60, false, true);
 
   this.avatar.anchor.set(0.5);
 
@@ -68,23 +74,36 @@ Avatar.prototype.update = function() {
 
   if (this.cursor.left) {
     this.avatar.x += -1;
+    this.currentDir = "left"
     this.avatar.animations.play('walk_left', 8, false, false);
   }
   if (this.cursor.right) {
+    this.currentDir = "right"
     this.avatar.animations.play('walk_right', 8, false, false);
     this.avatar.x += 1;
   }
   if (this.cursor.up) {
+    this.currentDir = "up"
     this.avatar.animations.play('walk_up', 8, false, false);
     this.avatar.y += -1;
   }
   if (this.cursor.down) {
+    this.currentDir = "down"
     this.avatar.animations.play('walk_down', 8, false, false);
     this.avatar.y += 1;
   }
-  if (this.cursor.attack) {
+  if (this.cursor.attack && this.currentDir === "left") {
     console.log("attack!");
+      this.avatar.animations.play('attack_left', 8, false, false);
+  }
+  if (this.cursor.attack && this.currentDir === "right") {
+    this.avatar.animations.play('attack_right', 8, false, false);
+  }
+  if (this.cursor.attack && this.currentDir === "up") {
     this.avatar.animations.play('attack_up', 8, false, false);
+  }
+  if (this.cursor.attack && this.currentDir === "down") {
+    this.avatar.animations.play('attack_down', 8, false, false);
   }
 
 };
