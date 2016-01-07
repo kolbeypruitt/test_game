@@ -34,7 +34,7 @@ var eurecaClientSetup = function() {
   eurecaClient.exports.kill = function(id) {
     if (avatarList[id]) {
       avatarList[id].kill();
-      // console.log('killing ', id, avatarList[id]);
+      console.log('killing ', id, avatarList[id]);
     }
   }
 
@@ -45,6 +45,7 @@ var eurecaClientSetup = function() {
     // console.log('SPAWN');
     var spawn = new Avatar(i, game, avatar);
     avatarList[i] = spawn;
+    console.log(spawn);
   }
 
   eurecaClient.exports.updateState = function(id, state) {
@@ -74,12 +75,11 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', {
 });
 
 function preload() {
+
   game.load.atlasJSONHash('marvin', 'assets/sprites/marvin.png', 'assets/sprites/marvin.json');
-
-
-  // game.load.spritesheet('marvin', 'assets/marvin/walking.png', 64, 75, 56);
   game.load.image('grass', 'assets/sprites/grass.png');
   game.load.image('logo', 'assets/sprites/game_logo.png');
+
 }
 
 
@@ -100,7 +100,6 @@ function create() {
   avatar = player.avatar;
   avatar.x = 0;
   avatar.y = 0;
-  // shadow = player.shadow;
 
   avatar.bringToTop();
 
@@ -166,14 +165,37 @@ function update() {
     var curAvatar = avatarList[i].avatar;
     for (var j in avatarList) {
       if (!avatarList[j]) continue;
-      if (j != i) {
+      if (j != i && avatarList[i].cursor.attack === true) {
+
         var targetAvatar = avatarList[j].avatar;
+
+        game.physics.arcade.overlap(avatar, targetAvatar, attackHitPlayer, null, this);
+
       }
       if (avatarList[j].alive) {
         avatarList[j].update();
       }
     }
   }
+
+  // for (var i in tanksList) {
+  //   if (!tanksList[i]) continue;
+  //   var curBullets = tanksList[i].bullets;
+  //   var curTank = tanksList[i].tank;
+  //   for (var j in tanksList) {
+  //     if (!tanksList[j]) continue;
+  //     if (j != i) {
+
+  //       var targetTank = tanksList[j].tank;
+
+  //       game.physics.arcade.overlap(curBullets, targetTank, bulletHitPlayer, null, this);
+          
+  //     }
+  //     if (tanksList[j].alive) {
+  //       tanksList[j].update();
+  //     }
+  //   }
+  // }
 
 
   scoreText.text = 'Score: ' + score;
@@ -183,6 +205,11 @@ function update() {
     scoreText.visible = false;
   }
 
+}
+
+function attackHitPlayer(avatar, targetAvatar) {
+  console.log("avatar attacked");
+  targetAvatar.kill();
 }
 
 function render() {}

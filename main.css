@@ -1,0 +1,7 @@
+body {
+  background-image: url("assets/black-wood-wallpaper.jpg");
+}
+#gamediv {
+  width: 800px ;
+  margin: 50px auto;
+}
