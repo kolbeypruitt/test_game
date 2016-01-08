@@ -4,9 +4,25 @@
   <meta charset="UTF-8">
   <title>Phaser Game</title>
   <link rel="stylesheet" href="main.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
-  <div id="gamediv">
+  <div class="container">
+    <div id="item1">
+    </div>
+    <div id="item2">
+      <div id="gamediv"></div>
+    </div>
+    <div id="item3">
+      <div id="auth">
+        Name
+        <input type="text" id="nick"/><button id="logBtn">Log In</button>
+      </div>
+      <div id="main" style="display:none">
+        <ul id="msgbox"></ul>
+        <input type="text" id="msg"/><button id="sendBtn">Send</button>
+      </div>
+    </div>
   </div>
   <script src="/eureca.js"></script>
   <script type="text/javascript" src="phaser.js"></script>

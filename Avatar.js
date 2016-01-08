@@ -1,4 +1,4 @@
-var Avatar = function(index, game, player) {
+var Player = function(index, game, player) {
 
   this.cursor = {
     left: false,
@@ -23,7 +23,6 @@ var Avatar = function(index, game, player) {
   this.nextAttack = 0;
   this.game = game;
   this.health = 30;
-  // this.player = player;
   this.alive = true;
 
   this.avatar = game.add.sprite(x, y, 'marvin');
@@ -52,10 +51,8 @@ var Avatar = function(index, game, player) {
 
 };
 
-Avatar.prototype.update = function() {
+Player.prototype.update = function() {
   // game.physics.arcade.overlap(avatar, enemies, avatar.attack, null, this);
-  // this.game.physics.arcade.overlap(bullets,enemies,this.avataenemyKill,null,this);
-  // this.game.physics.arcade.overlap(player,enemies,this.avatar.playerKill,null,this);
 
   var inputChanged = (
     this.cursor.left != this.input.left ||
@@ -102,7 +99,7 @@ Avatar.prototype.update = function() {
 
   if (this.cursor.attack && this.currentDir === "left") {
     this.avatar.animations.play('attack_left', 8, false, false);
-    // this.attack(this.avatar, enemy)
+    this.attack(this.avatar, enemy)
   } else
   if (this.cursor.attack && this.currentDir === "right") {
     this.avatar.animations.play('attack_right', 8, false, false);
@@ -116,17 +113,19 @@ Avatar.prototype.update = function() {
 
 };
 
-// Avatar.prototype.attack = function(avatar, enemy) {
+Player.prototype.attack = function(avatar, enemy) {
 
-//   if (!this.alive) return;
-//   if (this.game.time.now > this.nextAttack) {
-//     this.nextAttack = this.game.time.now + this.AttackRate;
-//   }
+  // if (!enemy.alive) return;
+  // if (this.game.time.now > this.nextAttack) {
+  //   this.nextAttack = this.game.time.now + this.AttackRate;
+  // }
 
-//   enemy.kill();
-// }
+  enemy.kill();
+}
 
-Avatar.prototype.kill = function() {
+Player.prototype.kill = function() {
+  console.log("kill");
+  // this.avatar.animations.play('die', 8, false, false);
   this.alive = false;
   this.avatar.kill();
 };

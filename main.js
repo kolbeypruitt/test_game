@@ -1,6 +1,5 @@
-var ready;
 var myId;
-var avatarList;
+var playerList;
 var avatar;
 var eurecaServer;
 var myId = 0;
@@ -32,9 +31,9 @@ var eurecaClientSetup = function() {
   }
 
   eurecaClient.exports.kill = function(id) {
-    if (avatarList[id]) {
-      avatarList[id].kill();
-      console.log('killing ', id, avatarList[id]);
+    if (playerList[id]) {
+      playerList[id].kill();
+      console.log('killing ', id, playerList[id]);
     }
   }
 
@@ -43,21 +42,61 @@ var eurecaClientSetup = function() {
     if (i == myId) return; //this is me
 
     // console.log('SPAWN');
-    var spawn = new Avatar(i, game, avatar);
-    avatarList[i] = spawn;
+    var spawn = new Player(i, game, avatar);
+    playerList[i] = spawn;
     console.log(spawn);
   }
 
   eurecaClient.exports.updateState = function(id, state) {
     // console.log('updating state', id, state)
-    if (avatarList[id]) {
-      avatarList[id].cursor = state;
-      avatarList[id].avatar.x = state.x;
-      avatarList[id].avatar.y = state.y;
-      avatarList[id].avatar.attack = state.attack;
-      avatarList[id].update();
+    if (playerList[id]) {
+      playerList[id].cursor = state;
+      playerList[id].avatar.x = state.x;
+      playerList[id].avatar.y = state.y;
+      playerList[id].avatar.attack = state.attack;
+      playerList[id].update();
     }
+
   }
+
+  eurecaClient.ready(function(proxy) {
+    eurecaClient = proxy;
+  });
+
+//////// V V V V V V V CHAT STUFF V V V V V V V V V
+  var tchat = eurecaClient.exports.tchat = {};
+  //the server use this method to send other eurecaClient messages to the current eurecaClient
+  tchat.send = function(nick, message) {
+    var tchatline = $('<li><b>' + nick + ' </b><span>' + message + '</span></li>');
+    $('#msgbox').append(tchatline);
+  }
+
+  //called when the server authenticate this eurecaClient
+  tchat.welcome = function() {
+    $('#auth').fadeOut('fast', function() {
+      $('#main').fadeIn('fast');
+    });
+  }
+
+  //DOM stuff
+  //initialise with a default nick
+  $('#nick').val('anonymous-' + new Date().getTime());
+
+  //simulate authentication
+  $('#logBtn').click(function() {
+    console.log('click');
+    if (!eurecaClient) return; //eurecaClient not ready
+
+    var nick = $('#nick').val();
+    eurecaClient.tchatServer.login(nick);
+  });
+
+  //send tchat message
+  $('#sendBtn').click(function() {
+    if (!eurecaClient) return; //eurecaClient not ready
+
+    eurecaClient.tchatServer.send($('#msg').val());
+  });
 
 }
 
@@ -93,10 +132,10 @@ function create() {
   land = game.add.tileSprite(0, 0, 800, 600, 'grass');
   land.fixedToCamera = true;
 
-  avatarList = {};
+  playerList = {};
 
-  player = new Avatar(myId, game, avatar);
-  avatarList[myId] = player;
+  player = new Player(myId, game, avatar);
+  playerList[myId] = player;
   avatar = player.avatar;
   avatar.x = 0;
   avatar.y = 0;
@@ -160,42 +199,23 @@ function update() {
   land.tilePosition.x = -game.camera.x;
   land.tilePosition.y = -game.camera.y;
 
-  for (var i in avatarList) {
-    if (!avatarList[i]) continue;
-    var curAvatar = avatarList[i].avatar;
-    for (var j in avatarList) {
-      if (!avatarList[j]) continue;
-      if (j != i && avatarList[i].cursor.attack === true) {
+  for (var i in playerList) {
+    if (!playerList[i]) continue;
+    var curAvatar = playerList[i].avatar;
+    for (var j in playerList) {
+      if (!playerList[j]) continue;
+      if (j != i && playerList[i].cursor.attack && curAvatar.alive) {
 
-        var targetAvatar = avatarList[j].avatar;
+        var targetAvatar = playerList[j].avatar;
 
         game.physics.arcade.overlap(avatar, targetAvatar, attackHitPlayer, null, this);
 
       }
-      if (avatarList[j].alive) {
-        avatarList[j].update();
+      if (playerList[j].alive) {
+        playerList[j].update();
       }
     }
   }
-
-  // for (var i in tanksList) {
-  //   if (!tanksList[i]) continue;
-  //   var curBullets = tanksList[i].bullets;
-  //   var curTank = tanksList[i].tank;
-  //   for (var j in tanksList) {
-  //     if (!tanksList[j]) continue;
-  //     if (j != i) {
-
-  //       var targetTank = tanksList[j].tank;
-
-  //       game.physics.arcade.overlap(curBullets, targetTank, bulletHitPlayer, null, this);
-          
-  //     }
-  //     if (tanksList[j].alive) {
-  //       tanksList[j].update();
-  //     }
-  //   }
-  // }
 
 
   scoreText.text = 'Score: ' + score;
@@ -208,7 +228,6 @@ function update() {
 }
 
 function attackHitPlayer(avatar, targetAvatar) {
-  console.log("avatar attacked");
   targetAvatar.kill();
 }
 

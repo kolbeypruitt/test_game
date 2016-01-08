@@ -1,7 +1,49 @@
 body {
   background-image: url("assets/black-wood-wallpaper.jpg");
+  color: white;
 }
+
+.container {
+  display: flex; /* or inline-flex */
+}
+
+#item1 {
+  flex-grow: 2; /* default 0 */
+}
+#item2 {
+  flex-grow: 3; /* default 0 */
+}
+#item3 {
+  flex-grow: 2; /* default 0 */
+}
+
 #gamediv {
-  width: 800px ;
+  width: 800px;
   margin: 50px auto;
+}
+
+#msgbox {
+  margin-top: 50px;
+  margin-right: 50px;
+  border:3px solid #555;
+  height:500px;
+  overflow:auto;        
+  list-style:none;
+  padding:5px;        
+}
+
+#msgbox li {
+  list-style:none;
+  padding:0px;
+  color:#55e;
+  font:700 12px arial;
+}
+
+#msgbox li b {
+  font:700 14px arial;
+  color:#b33;
+}
+
+#auth {
+ margin: 50px auto;
 }
